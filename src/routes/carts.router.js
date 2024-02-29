@@ -15,34 +15,29 @@ const cartsManager = new CartsManager()
 export const router = express.Router()
 
 
-router.get('/api/carts/:cid',(req,res)=>{
+router.get('/api/carts/:cid',async (req,res)=>{
     //Esta ruta devuelve un carrito
-    
-   const {cid} = req.params
-    //Pido el carro al manager y como se que devuelve undefined si no lo encuentra.
-    if (cartsManager.existCart(cid)){
-        const products = cartsManager.getProducsFromCart(cid)
-        res.json({'Carro ID':cid,'Lista de productos':products})
-    }
-    else{
-        res.send(`No existe el carro id ${cid}`)
-    }
-
+    const {cid} = req.params
     try {
-        
+        const response = await cartsManager.getCartById(cid)
+        if (response.success){
+        console.log('Require cart', response)
+        res.json({cartId: response.cart._id, products: response.cart.products})
+       }
+       else{
+        res.send(response.message)
+       }
     } catch (error) {
-        
+        console.log(`Error al obtener carrito id ${cid}!.`, error)
+        res.status(500).json({error: 'Error del servidor'})
     }
-        
-   
-
 })
 
 router.post('/api/carts',async (req,res)=>{
     //Esta ruta simplemente crea un carrito.
     try{
         const newCart = await cartsManager.createCart()
-    res.json(newCart)
+        res.json(newCart)
         }
     catch(error){
         console.log('Error al crear carrito !.', error)
@@ -54,21 +49,25 @@ router.post('/api/carts',async (req,res)=>{
 
 
 router.post('/api/carts/:cid/products/:pid',async(req,res)=>{
-    /*
-    Me pide agregar el producto de pid al cart de cartId
-    */
+    
+    const {cid:cartId,pid:productId} = req.params
+    console.log('Desde postman: ',req.params)
+       
     try{
-        const {cid:cartId,pid:productId} = req.params
-        //Obtengo el productos.
-        //const productToAdd = await productManager.getProductById(productId)
-        //Agrego el producto en cantidad 1
-        await cartsManager.addProductInCart(cartId,productId,1)
-        
-        res.send('taca')
+        const response = await cartsManager.addProductInCart(cartId,productId,1)
+        if (response.success){
+            console.log(response.success)
+            res.json({cartId: response.cart._id, products: response.cart.products})
+        }
+        else{
+            res.send(response.message)
+        }
+       
     }
     catch{
         console.log('Error al ingresar el producto carrito !.', error)
         res.status(500).json({error: 'Error del servidor'})
     }
+    
 })
 
