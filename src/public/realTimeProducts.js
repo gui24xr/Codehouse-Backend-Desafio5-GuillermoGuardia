@@ -2,10 +2,18 @@
 //Inicio la comunicacion mediante websockets.
 const socket = io()
 
+
+//Funciones accesorias.
 function validateAddProductForms(){
   //Esta funcion valida y devuelve true o false.
   return true
 }
+
+
+
+
+
+
 
 
 //Agrego evento al boton enviar del form y le digo que ejecute la funcion addProduct.
@@ -80,21 +88,15 @@ async function addProduct(){
 
 //Recibo la lista de productos x socket y construyo la lista con el dom.
 socket.on('eventProducts',(data)=>{
-
     //Agregamos los elementos al dom en nuestra div grid donde van los productos y tiene id='containerproducts'
     //Pero antes limpiamos el container xq como esto escucha constantemente va a agregar cada vez que escuche.
     const containerProducts = document.getElementById('containerproducts')
-
     //Con esto limpio
-    if (containerProducts) {
-        // Elimina todos los nodos hijos
+    if (containerProducts) {// Elimina todos los nodos hijos
         while (containerProducts.firstChild) {
           containerProducts.removeChild(containerProducts.firstChild);
         }
-      } else {
-        console.error('El elemento con el ID especificado no existe.');
-      }
-
+      } else console.error('El elemento con el ID especificado no existe.');
     //Recorro el array y x cada elemento agrego el product Al container
     data.forEach(item =>addProductCartToContainer(containerProducts, item.title, item.price, item._id,item.img))
  })

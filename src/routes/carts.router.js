@@ -1,18 +1,12 @@
-
-
 import express from 'express'
-//import { cartsManager } from '../controllers/carts-manager.js'
-//Importo la instancia que maneja productos que esta activa ya.
-//import { productManager } from './products.router.js'
 import { ProductManager } from '../controllers/product-manager-db.js'
 import { CartsManager } from '../controllers/carts-manager-db.js'
-//Manejo de los recursos de mi servidor
-//const PATHFILECARTS = './src/models/carrito.json'
-//const myCartsManager = new cartsManager(PATHFILECARTS)
-const productManager = new ProductManager()
-const cartsManager = new CartsManager()
+
+
 //Creo mi instancia de objeto Router
 export const router = express.Router()
+//Creo instancia de mi cart Manager.
+const cartsManager = new CartsManager()
 
 
 router.get('/api/carts/:cid',async (req,res)=>{
@@ -34,7 +28,7 @@ router.get('/api/carts/:cid',async (req,res)=>{
 })
 
 router.post('/api/carts',async (req,res)=>{
-    //Esta ruta simplemente crea un carrito.
+    //Esta ruta simplemente crea un carrito y lo envia al cliente para ser mostrado.
     try{
         const newCart = await cartsManager.createCart()
         res.json(newCart)
@@ -49,7 +43,8 @@ router.post('/api/carts',async (req,res)=>{
 
 
 router.post('/api/carts/:cid/products/:pid',async(req,res)=>{
-    
+    //Agregar el producto pasado por paremtro (su id) al carrito pasado por su parametro id.
+    //De estar el producto incrementa la cantidad de uno, de no estar lo crea y agrega una unidad del mismo.
     const {cid:cartId,pid:productId} = req.params
     console.log('Desde postman: ',req.params)
        

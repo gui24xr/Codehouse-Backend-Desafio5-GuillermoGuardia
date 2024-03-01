@@ -4,6 +4,7 @@ import mongoose from "mongoose"
 export class CartsManager{
 
     async createCart(){
+        //Crea un carrito en nuestra BD. Saliendo todo OK retorna el carrito creado.
         try {
             const newCart = new CartModel({products:[]})
             await newCart.save()

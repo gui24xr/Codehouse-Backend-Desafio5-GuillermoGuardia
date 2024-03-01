@@ -1,29 +1,18 @@
 import express from 'express'
-//import {ProductManager} from '../controllers/product-manager.js'
 import { ProductManager } from '../controllers/product-manager-db.js'
 
-//Product manager donde tengo los recursos de la seccion productos de mi server.
-const PATHFILEPRODUCTS = './src/models/productos.json'
-/*
-Uso el export xq esta instancia ademas de trabajar aca debe trabajar en otros routers para desde
-'/api/carts/:cid/products/:pid' agregar productos.
-*/
-//export const productManager = new ProductManager(PATHFILEPRODUCTS) // Creo la instnacia de productManager con el archivo de productos ya cargados.(Puse 16)
+//Creo mi router.
+export const router = express.Router()
+//Creo la instancia.
 const productManager = new ProductManager()
 
-const router = express.Router()
-
-/*router.get('/api/products',(req,res)=>{
-    res.send('Products OK ruta raiz.')
-})*/
 
 router.get('/api/products', async (req,res)=>{
     /*Al hacer una peticion a '/products' pido los productos al product Manager.
       Si todo sale Ok miro req.query si trajo limit o no trajo. Si trajo limit devuelvo el numero de objetos que me pide en limit.
       SI no trajo limit devuelvo la lista entera de productos.
       Si ocurrio un error doy aviso y devuelvo en la respuesta un status en forma de json.
-    */
-      
+    */  
     try{
         const limit = req.query.limit
         const productos = await productManager.getProducts()
@@ -100,4 +89,3 @@ router.put('/api/products/:pid', async(req, res)=>{
 
 
 
-export {router}
